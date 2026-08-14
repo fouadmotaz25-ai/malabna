@@ -1,0 +1,24 @@
+{
+  "name": "ملعبنا — حجز ملاعب كرة القدم",
+  "short_name": "ملعبنا",
+  "description": "احجز ملاعب كرة القدم، اختر التاريخ والوقت، وتابع مجتمع اللاعبين.",
+  "lang": "ar-IQ",
+  "dir": "rtl",
+  "id": "/malabna/",
+  "start_url": "/malabna/?source=pwa",
+  "scope": "/malabna/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#f5f7f3",
+  "theme_color": "#063f2b",
+  "categories": ["sports", "lifestyle", "shopping"],
+  "icons": [
+    {"src": "app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ],
+  "shortcuts": [
+    {"name": "حجز ملعب", "short_name": "احجز", "url": "/malabna/#stadiums"},
+    {"name": "السوق الكروي", "short_name": "السوق", "url": "/malabna/#market"},
+    {"name": "التصنيف الشهري", "short_name": "التصنيف", "url": "/malabna/#ranking"}
+  ]
+}
