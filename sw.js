@@ -1,4 +1,4 @@
-const CACHE='malabna-app-v14';
+const CACHE='malabna-app-v15';
 const SHELL=['./','./index.html','./style.css','./manifest.webmanifest','./app-icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
