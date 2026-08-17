@@ -1,1 +1,157 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08101d"><title>تغذية NextMove الرياضية</title><link rel="icon" href="nextmove-logo.png"><link rel="stylesheet" href="portal-pages.css"></head><body><header class="topbar"><nav class="nav shell"><button class="back-btn" type="button" aria-label="الرجوع للصفحة السابقة" onclick="history.length>1?history.back():location.href=&#39;index.html&#39;">→ <span>رجوع</span></button><a class="brand" href="index.html"><img src="nextmove-logo.png" alt=""><span>NEXTMOVE</span></a><div class="links"><a href="index.html#sports">الرياضات</a><a href="store.html">المتجر</a><a class="active" href="nutrition.html">التغذية</a><a href="index.html#ranking">مجتمع اللاعبين</a></div><a class="nav-cta" href="#plans">اختر اشتراكك</a></nav></header><main><section class="page-hero"><div class="shell"><span class="eyebrow">◆ تغذية الرياضيين</span><h1>أكلك جزء<br>من حركتك القادمة.</h1><p>وجبات محسوبة للرياضة واللياقة مع اشتراكات أسبوعية وشهرية، أو اطلب وجبتك في اليوم الذي يناسبك.</p></div></section><section class="shell plans" id="plans"><article class="plan"><span class="plan-badge">مرن وسريع</span><h2>وجبة منفردة</h2><p>اختر أي وجبة من القائمة دون اشتراك.</p><div class="price">من 8,000 <small>د.ع / وجبة</small></div><ul><li>اختيار الوجبة بحرية</li><li>السعر واضح لكل وجبة</li><li>مناسب للتجربة</li></ul><button onclick="openOrder('وجبة منفردة')">اختر وجبتك</button></article><article class="plan featured"><span class="plan-badge">الأكثر طلبًا</span><h2>اشتراك أسبوعي</h2><p>ست وجبات متوازنة تصل حسب جدولك.</p><div class="price">54,000 <small>د.ع / أسبوع</small></div><ul><li>6 وجبات متنوعة</li><li>اختيار هدفك الغذائي</li><li>تحديد أيام التوصيل</li></ul><button onclick="openOrder('اشتراك أسبوعي')">اشترك أسبوعيًا</button></article><article class="plan"><span class="plan-badge">أفضل قيمة</span><h2>اشتراك شهري</h2><p>خطة مستمرة للرياضيين والمهتمين باللياقة.</p><div class="price">195,000 <small>د.ع / شهر</small></div><ul><li>24 وجبة خلال الشهر</li><li>تنويع أسبوعي للوجبات</li><li>أولوية في الجدولة</li></ul><button onclick="openOrder('اشتراك شهري')">اشترك شهريًا</button></article></section><section class="content shell meals"><div class="section-head"><div><span class="eyebrow">وجبات اليوم</span><h2>اختر حسب هدفك</h2><p>القيم تقريبية وقد تختلف حسب المكونات والحجم.</p></div></div><div class="meal-grid"><article class="card meal"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=85" alt="وجبة بروتين"><div class="card-copy"><small>بناء العضلات</small><h3>دجاج مشوي مع الأرز</h3><div class="nutrition-meta"><span>520 سعرة</span><span>45غ بروتين</span><span>متوازن</span></div><div class="card-bottom"><strong>10,000 د.ع</strong><button onclick="openOrder('دجاج مشوي مع الأرز')">اطلب</button></div></div></article><article class="card meal"><img src="https://images.unsplash.com/photo-1539136788836-5699e78bfc75?auto=format&fit=crop&w=900&q=85" alt="وجبة صحية"><div class="card-copy"><small>خسارة الوزن</small><h3>سلطة بروتين متكاملة</h3><div class="nutrition-meta"><span>360 سعرة</span><span>32غ بروتين</span><span>خفيفة</span></div><div class="card-bottom"><strong>8,000 د.ع</strong><button onclick="openOrder('سلطة بروتين متكاملة')">اطلب</button></div></div></article><article class="card meal"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85" alt="وجبة طاقة"><div class="card-copy"><small>طاقة وأداء</small><h3>لحم وخضار مشوية</h3><div class="nutrition-meta"><span>610 سعرة</span><span>48غ بروتين</span><span>طاقة عالية</span></div><div class="card-bottom"><strong>12,000 د.ع</strong><button onclick="openOrder('لحم وخضار مشوية')">اطلب</button></div></div></article></div></section></main><div class="order-box" id="orderBox"><form class="order-modal" onsubmit="submitOrder(event)"><button class="close" type="button" onclick="closeOrder()">×</button><span class="eyebrow">طلب التغذية</span><h2 id="orderTitle">اختر خطتك</h2><p>اترك بياناتك وجدولك المفضل لتأكيد الطلب.</p><input id="selectedPlan" type="hidden"><label>الاسم الكامل<input required minlength="2" id="customerName"></label><label>رقم الهاتف<input required inputmode="tel" id="customerPhone" placeholder="07xxxxxxxxx"></label><label>الهدف الغذائي<select id="nutritionGoal"><option>لياقة عامة</option><option>بناء العضلات</option><option>خسارة الوزن</option><option>المحافظة على الوزن</option></select></label><label>وقت التوصيل المفضل<select id="deliveryTime"><option>الغداء</option><option>بعد التمرين</option><option>العشاء</option></select></label><button>إرسال الطلب</button></form></div><div class="toast" id="toast"></div><footer><div class="footer-row shell"><span>© 2026 NextMove Nutrition</span><span>خطط غذائية مرنة للرياضيين</span></div></footer><script>function openOrder(plan){document.querySelector('#selectedPlan').value=plan;document.querySelector('#orderTitle').textContent=plan;document.querySelector('#orderBox').style.display='grid'}function closeOrder(){document.querySelector('#orderBox').style.display='none'}function submitOrder(e){e.preventDefault();const order={plan:document.querySelector('#selectedPlan').value,name:document.querySelector('#customerName').value,phone:document.querySelector('#customerPhone').value,goal:document.querySelector('#nutritionGoal').value,time:document.querySelector('#deliveryTime').value,created_at:new Date().toISOString()};const orders=JSON.parse(localStorage.getItem('nextmove-nutrition-orders')||'[]');orders.push(order);localStorage.setItem('nextmove-nutrition-orders',JSON.stringify(orders));closeOrder();e.target.reset();const box=document.querySelector('#toast');box.textContent='تم تسجيل طلبك، وسنتواصل معك لتأكيد الجدول والدفع';box.style.display='block';setTimeout(()=>box.style.display='none',4500)}document.querySelector('#orderBox').addEventListener('click',e=>{if(e.target.id==='orderBox')closeOrder()})</script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08101d">
+  <meta name="description" content="وجبات واشتراكات غذائية رياضية من مطاعم NextMove المعتمدة.">
+  <title>مطاعم وتغذية NextMove</title>
+  <link rel="icon" href="nextmove-logo.png">
+  <link rel="stylesheet" href="portal-pages.css">
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav shell">
+      <a class="back-btn" href="index.html" aria-label="الرجوع إلى الصفحة الرئيسية">→ <span>رجوع</span></a>
+      <a class="brand" href="index.html"><img src="nextmove-logo.png" alt=""><span>NEXTMOVE</span></a>
+      <div class="links"><a href="index.html#sports">الرياضات</a><a href="store.html">المتجر</a><a class="active" href="nutrition.html">المطاعم والتغذية</a><a href="training.html">التدريب</a></div>
+      <a class="nav-cta" href="index.html#market">دخول المطاعم</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="shell" data-reveal>
+        <span class="eyebrow">◆ مطاعم وتغذية الرياضيين</span>
+        <h1>وجبتك المناسبة.<br>من مطعم موثّق.</h1>
+        <p>اكتشف وجبات منشورة مباشرة من المطاعم، مع المكونات والسعر والقيم الغذائية والكمية المتاحة ووقت التجهيز.</p>
+        <div class="hero-actions"><a href="#restaurantMeals">استعرض الوجبات</a><a href="index.html#market">سجّل مطعمك بكود SHOP</a></div>
+      </div>
+    </section>
+
+    <section class="shell plans" id="plans">
+      <article class="plan" data-reveal><span class="plan-badge">مرن وسريع</span><h2>وجبة منفردة</h2><p>اختر أي وجبة منشورة من المطاعم دون اشتراك.</p><div class="price">حسب المطعم <small>د.ع / وجبة</small></div><ul><li>المكونات والسعر واضحان</li><li>معرفة وقت التجهيز</li><li>إشعار المطعم فورًا</li></ul><a class="plan-link" href="#restaurantMeals">اختر وجبتك</a></article>
+      <article class="plan featured" data-reveal><span class="plan-badge">الأكثر طلبًا</span><h2>اشتراك أسبوعي</h2><p>ست وجبات متوازنة تصل حسب جدولك.</p><div class="price">54,000 <small>د.ع / أسبوع</small></div><ul><li>6 وجبات متنوعة</li><li>اختيار هدفك الغذائي</li><li>تحديد أيام التوصيل</li></ul><button onclick="openPlanOrder('اشتراك أسبوعي')">اشترك أسبوعيًا</button></article>
+      <article class="plan" data-reveal><span class="plan-badge">أفضل قيمة</span><h2>اشتراك شهري</h2><p>خطة مستمرة للرياضيين والمهتمين باللياقة.</p><div class="price">195,000 <small>د.ع / شهر</small></div><ul><li>24 وجبة خلال الشهر</li><li>تنويع أسبوعي للوجبات</li><li>أولوية في الجدولة</li></ul><button onclick="openPlanOrder('اشتراك شهري')">اشترك شهريًا</button></article>
+    </section>
+
+    <section class="content shell meals" id="restaurantMeals">
+      <div class="section-head" data-reveal><div><span class="eyebrow">وجبات المطاعم</span><h2>اختر حسب هدفك</h2><p>كل وجبة مرتبطة بالمطعم الذي نشرها، ويصل الطلب إليه فورًا.</p></div></div>
+      <div class="filters" aria-label="تصنيفات الوجبات" data-reveal>
+        <button class="active" onclick="filterMeals('all',this)">الكل</button>
+        <button onclick="filterMeals('protein',this)">🍗 بروتين</button>
+        <button onclick="filterMeals('diet',this)">🥗 دايت</button>
+        <button onclick="filterMeals('energy',this)">⚡ طاقة</button>
+        <button onclick="filterMeals('regular',this)">🍲 وجبات عادية</button>
+        <button onclick="filterMeals('drinks',this)">🥤 مشروبات</button>
+      </div>
+      <div class="meal-grid" id="mealGrid"><div class="empty">جارٍ تحميل وجبات المطاعم…</div></div>
+    </section>
+  </main>
+
+  <div class="order-box" id="orderBox">
+    <form class="order-modal" onsubmit="submitOrder(event)">
+      <button class="close" type="button" onclick="closeOrder()">×</button>
+      <span class="eyebrow">طلب من NextMove</span>
+      <h2 id="orderTitle">اختر طلبك</h2>
+      <p id="orderHint">اترك بياناتك وجدولك المفضل لتأكيد الطلب.</p>
+      <input id="selectedPlan" type="hidden">
+      <input id="selectedMealId" type="hidden">
+      <label id="mealQuantityLabel" hidden>الكمية<input id="mealQuantity" type="number" min="1" max="20" value="1"></label>
+      <div id="planCustomerFields">
+        <label>الاسم الكامل<input minlength="2" id="customerName"></label>
+        <label>رقم الهاتف<input inputmode="tel" id="customerPhone" placeholder="07xxxxxxxxx"></label>
+        <label>الهدف الغذائي<select id="nutritionGoal"><option>لياقة عامة</option><option>بناء العضلات</option><option>خسارة الوزن</option><option>المحافظة على الوزن</option></select></label>
+        <label>وقت التوصيل المفضل<select id="deliveryTime"><option>الغداء</option><option>بعد التمرين</option><option>العشاء</option></select></label>
+      </div>
+      <button id="submitOrderButton">إرسال الطلب</button>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <footer><div class="footer-row shell"><span>© 2026 NextMove Nutrition</span><span>وجبات موثقة من مطاعم عراقية</span></div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
+  <script>
+    const client=window.supabase.createClient('https://onyideifalwoyxbvwhwl.supabase.co','sb_publishable_K_8YUNMGO4UAOUTxBc9z8Q_5mOKLC46');
+    const labels={protein:'وجبات بروتين',diet:'دايت وخسارة وزن',energy:'طاقة وأداء',regular:'وجبات عادية',drinks:'مشروبات'};
+    let meals=[];
+    const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const safeImage=value=>/^https:\/\//i.test(value||'')?value:'';
+
+    function renderMeals(list){
+      const grid=document.querySelector('#mealGrid');
+      grid.classList.add('is-switching');
+      grid.innerHTML=list.length?list.map(meal=>`<article class="card meal reveal-card"><div class="card-image"><img src="${safeImage(meal.image_url)}" alt="${esc(meal.title)}" loading="lazy"><span>${meal.stock>0?'متوفرة الآن':'نفدت الكمية'}</span></div><div class="card-copy"><small>${esc(meal.restaurant_name)} · ${labels[meal.category]||'وجبة'}</small><h3>${esc(meal.title)}</h3><p>${esc(meal.description)}</p><p class="meal-ingredients"><b>المكونات:</b> ${esc(meal.ingredients)}</p><div class="nutrition-meta">${meal.calories!==null?`<span>${meal.calories} سعرة</span>`:''}${meal.protein_grams!==null?`<span>${meal.protein_grams}غ بروتين</span>`:''}<span>⏱ ${meal.prep_minutes} دقيقة</span><span>${meal.delivery_available?'توصيل متاح':'استلام من المطعم'}</span></div><div class="card-bottom"><strong>${Number(meal.price_iqd).toLocaleString('ar-IQ')} د.ع</strong><button ${meal.stock<1?'disabled':''} onclick="openMealOrder(${Number(meal.id)})">${meal.stock>0?'اطلب الآن':'غير متوفرة'}</button></div></div></article>`).join(''):'<div class="empty">لا توجد وجبات منشورة في هذا التصنيف حاليًا. يستطيع المطعم إضافتها من بوابة الشركاء.</div>';
+      requestAnimationFrame(()=>grid.classList.remove('is-switching'));
+    }
+
+    async function loadMeals(){
+      const {data,error}=await client.from('restaurant_meals').select('id,title,description,ingredients,category,price_iqd,stock,calories,protein_grams,prep_minutes,delivery_available,image_url,restaurant_name').eq('is_active',true).order('created_at',{ascending:false}).limit(60);
+      meals=error?[]:(data||[]);
+      renderMeals(meals);
+    }
+
+    function filterMeals(category,button){
+      document.querySelectorAll('.filters button').forEach(item=>item.classList.remove('active'));
+      button.classList.add('active');
+      renderMeals(category==='all'?meals:meals.filter(meal=>meal.category===category));
+    }
+
+    function openMealOrder(id){
+      const meal=meals.find(item=>Number(item.id)===Number(id));
+      if(!meal)return;
+      document.querySelector('#selectedMealId').value=id;
+      document.querySelector('#selectedPlan').value='';
+      document.querySelector('#orderTitle').textContent=meal.title;
+      document.querySelector('#orderHint').textContent='اختر الكمية ثم أكد الطلب. يجب تسجيل الدخول لإرسال الطلب رسميًا للمطعم.';
+      document.querySelector('#mealQuantityLabel').hidden=false;
+      document.querySelector('#planCustomerFields').hidden=true;
+      document.querySelector('#submitOrderButton').textContent='تأكيد طلب الوجبة';
+      document.querySelector('#orderBox').style.display='grid';
+    }
+
+    function openPlanOrder(plan){
+      document.querySelector('#selectedMealId').value='';
+      document.querySelector('#selectedPlan').value=plan;
+      document.querySelector('#orderTitle').textContent=plan;
+      document.querySelector('#orderHint').textContent='اترك بياناتك وجدولك المفضل لتأكيد الاشتراك.';
+      document.querySelector('#mealQuantityLabel').hidden=true;
+      document.querySelector('#planCustomerFields').hidden=false;
+      document.querySelector('#submitOrderButton').textContent='إرسال طلب الاشتراك';
+      document.querySelector('#orderBox').style.display='grid';
+    }
+
+    function closeOrder(){document.querySelector('#orderBox').style.display='none'}
+
+    async function submitOrder(event){
+      event.preventDefault();
+      const mealId=Number(document.querySelector('#selectedMealId').value);
+      const button=document.querySelector('#submitOrderButton');
+      if(mealId){
+        const {data:{session}}=await client.auth.getSession();
+        if(!session){toast('سجّل الدخول أولًا لإرسال طلب الوجبة رسميًا');setTimeout(()=>location.href='index.html#top',1700);return}
+        button.disabled=true;button.textContent='جارٍ إرسال الطلب...';
+        const quantity=Number(document.querySelector('#mealQuantity').value);
+        const {error}=await client.from('meal_orders').insert({meal_id:mealId,quantity});
+        button.disabled=false;button.textContent='تأكيد طلب الوجبة';
+        if(error){toast('تعذر إرسال الطلب أو أن الكمية لم تعد متوفرة');await loadMeals();return}
+        closeOrder();toast('تم إرسال طلب الوجبة وإشعار المطعم فورًا');await loadMeals();return;
+      }
+
+      const name=document.querySelector('#customerName').value.trim(),phone=document.querySelector('#customerPhone').value.trim();
+      if(name.length<2||phone.length<8){toast('أدخل الاسم ورقم الهاتف بشكل صحيح');return}
+      const order={plan:document.querySelector('#selectedPlan').value,name,phone,goal:document.querySelector('#nutritionGoal').value,time:document.querySelector('#deliveryTime').value,created_at:new Date().toISOString()};
+      const orders=JSON.parse(localStorage.getItem('nextmove-nutrition-orders')||'[]');
+      orders.push(order);localStorage.setItem('nextmove-nutrition-orders',JSON.stringify(orders));
+      closeOrder();event.target.reset();toast('تم تسجيل طلب الاشتراك، وسنتواصل معك لتأكيد الجدول والدفع');
+    }
+
+    function toast(message){const box=document.querySelector('#toast');box.textContent=message;box.style.display='block';setTimeout(()=>box.style.display='none',4500)}
+    document.querySelector('#orderBox').addEventListener('click',event=>{if(event.target.id==='orderBox')closeOrder()});
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>entry.target.classList.toggle('is-visible',entry.isIntersecting)),{threshold:.12});
+    document.querySelectorAll('[data-reveal]').forEach(item=>observer.observe(item));
+    loadMeals();
+  </script>
+</body>
+</html>
