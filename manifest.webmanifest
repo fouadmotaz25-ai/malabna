@@ -14,7 +14,7 @@
   "theme_color": "#0b1220",
   "categories": ["sports", "lifestyle", "shopping"],
   "icons": [
-    {"src": "app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+    {"src": "nextmove-logo.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any maskable"}
   ],
   "shortcuts": [
     {"name": "اختر رياضتك", "short_name": "الرياضات", "url": "/malabna/#sports"},

@@ -1,5 +1,5 @@
-const CACHE='nextmove-app-v19';
-const SHELL=['./','./index.html','./style.css','./manifest.webmanifest','./app-icon.svg'];
+const CACHE='nextmove-app-v20';
+const SHELL=['./','./index.html','./style.css','./manifest.webmanifest','./nextmove-logo.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
