@@ -18,6 +18,7 @@
   ],
   "shortcuts": [
     {"name": "اختر رياضتك", "short_name": "الرياضات", "url": "/malabna/#sports"},
+    {"name": "التدريب الحضوري والأونلاين", "short_name": "التدريب", "url": "/malabna/training.html"},
     {"name": "المتجر الرياضي", "short_name": "المتجر", "url": "/malabna/#market"},
     {"name": "مجتمع اللاعبين", "short_name": "المجتمع", "url": "/malabna/#ranking"}
   ]

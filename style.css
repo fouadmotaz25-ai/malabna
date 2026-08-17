@@ -44,3 +44,4 @@
 
 .mobile-service-links{display:none}
 @media(max-width:850px){.mobile-service-links{position:absolute;z-index:7;top:76px;left:15px;right:15px;display:flex;justify-content:center;gap:8px}.mobile-service-links a{display:flex;align-items:center;justify-content:center;min-height:42px;padding:9px 14px;border:1px solid #ffffff3d;border-radius:12px;background:#0b1220d9;backdrop-filter:blur(10px);color:#fff;font-size:12px;font-weight:900;box-shadow:0 10px 25px #0003}.mobile-service-links a:last-child{background:#c7ff3de8;color:#0b1220;border-color:#c7ff3d}}
+@media(max-width:420px){.mobile-service-links{gap:5px;left:8px;right:8px}.mobile-service-links a{flex:1;min-width:0;padding:8px 5px;font-size:10px;white-space:nowrap}}
