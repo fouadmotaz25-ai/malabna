@@ -6,7 +6,7 @@
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <text x="256" y="325" fill="#f7fafc" font-family="Arial, sans-serif" font-size="210" font-weight="900" text-anchor="middle" letter-spacing="-18">SH</text>
+  <text x="256" y="325" fill="#f7fafc" font-family="Arial, sans-serif" font-size="190" font-weight="900" text-anchor="middle" letter-spacing="-20">NM</text>
   <path d="M116 385h280" stroke="#c7ff3d" stroke-width="24" stroke-linecap="round"/>
   <circle cx="116" cy="385" r="12" fill="#ff8a3d"/>
   <circle cx="396" cy="385" r="12" fill="#42a5ff"/>
