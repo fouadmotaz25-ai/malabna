@@ -8,11 +8,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = host.includes("localhost") ? "http" : "https";
   const image = `${protocol}://${host}/og.png`;
   return {
-    title: "ملعبنا | احجز ملعبك والعب",
-    description: "احجز أفضل ملاعب كرة القدم بالقرب منك بسهولة وفي أقل من دقيقة.",
+    title: "NextMove | منصتك الرياضية",
+    description: "احجز المنشآت الرياضية والتدريب والتغذية والتجهيزات من منصة عراقية واحدة.",
     icons: { icon: "/favicon.svg" },
-    openGraph: { title: "ملعبنا | ملعبك جاهز", description: "اكتشف أفضل الملاعب واحجز موعدك في أقل من دقيقة.", images: [image], locale: "ar_IQ", type: "website" },
-    twitter: { card: "summary_large_image", title: "ملعبنا | ملعبك جاهز", description: "والكرة بانتظارك.", images: [image] },
+    openGraph: { title: "NextMove | حركتك القادمة تبدأ هنا", description: "رياضة وحجز وتدريب وتغذية في مكان واحد.", images: [image], locale: "ar_IQ", type: "website" },
+    twitter: { card: "summary_large_image", title: "NextMove", description: "حركتك القادمة تبدأ هنا.", images: [image] },
   };
 }
 
