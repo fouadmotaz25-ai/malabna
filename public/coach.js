@@ -2,7 +2,7 @@
   "use strict";
   const client = window.supabase.createClient("https://onyideifalwoyxbvwhwl.supabase.co", "sb_publishable_K_8YUNMGO4UAOUTxBc9z8Q_5mOKLC46", { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
   const demoMode = new URLSearchParams(location.search).get("demo") === "1";
-  const state = { user: null, subscriptions: [], active: null, channel: null, file: null, rendered: new Set(), demo: demoMode };
+  const state = { user: null, coach: null, subscriptions: [], plans: [], active: null, channel: null, file: null, rendered: new Set(), demo: demoMode };
   const $ = (selector) => document.querySelector(selector);
   const gate = $("#coachGate"), dashboard = $("#coachDashboard"), list = $("#traineeList"), messages = $("#coachMessages"), body = $("#conversationBody"), empty = $("#conversationEmpty"), text = $("#coachText"), imageInput = $("#coachImage"), preview = $("#coachImagePreview");
   const sampleSubscriptions = [
@@ -14,21 +14,37 @@
     "demo-1": [{ id: 1, sender_id: "e81f2a6b", body: "كابتن، هل وضعية السكوات صحيحة؟ أرسلت لك الصورة.", created_at: new Date(Date.now()-3600000).toISOString() }, { id: 2, sender_id: "coach", body: "الوضعية جيدة، لكن أبقِ الركبتين باتجاه أصابع القدم وخفف الوزن قليلاً.", created_at: new Date(Date.now()-3000000).toISOString() }],
     "demo-2": [{ id: 3, sender_id: "f91c3b7d", body: "أنهيت تمارين اليوم كاملة، هل أزيد الكارديو هذا الأسبوع؟", created_at: new Date(Date.now()-1800000).toISOString() }]
   };
+  const samplePlans = [
+    { id: "plan-1", title: "متابعة القوة والعضلات", description: "خطة شهرية، أربع مراجعات وتعديل الأوزان أسبوعياً.", price_iqd: 60000, billing_period: "month", sessions_count: 4, max_trainees: 30, is_active: true },
+    { id: "plan-2", title: "متابعة أسبوعية مكثفة", description: "مراجعتان خلال الأسبوع مع متابعة الصور والاستفسارات.", price_iqd: 25000, billing_period: "week", sessions_count: 2, max_trainees: 15, is_active: true }
+  ];
   const isActive = (s) => s.status === "active" && new Date(s.starts_at).getTime() <= Date.now() && new Date(s.ends_at).getTime() > Date.now();
   const traineeName = (s) => s.trainee_name?.trim() || `متدرب #${String(s.trainee_id).slice(0, 6).toUpperCase()}`;
   function toast(message) { const el = $("#coachToast"); el.textContent = message; el.style.display = "block"; setTimeout(() => el.style.display = "none", 3500); }
   async function stopRealtime() { if (state.channel) { await client.removeChannel(state.channel); state.channel = null; } }
   function updateSummary() { $("#traineeCount").textContent = state.subscriptions.length; $("#activeCount").textContent = state.subscriptions.filter(isActive).length; $("#pendingCount").textContent = state.subscriptions.filter(s => s.status === "pending").length; }
   async function loadCoach() {
-    if (state.demo) { state.user = { id: "coach" }; state.subscriptions = sampleSubscriptions; gate.hidden = true; dashboard.hidden = false; dashboard.insertAdjacentHTML("beforebegin", '<div class="demo-banner">معاينة واجهة الكابتن — البيانات المعروضة تجريبية ولا تكشف أي محادثات حقيقية.</div>'); updateSummary(); renderTrainees(); await openConversation("demo-1"); return; }
+    if (state.demo) { state.user = { id: "coach" }; state.coach = { display_name: "الكابتن محمد جاسم" }; state.subscriptions = sampleSubscriptions; state.plans = samplePlans; gate.hidden = true; dashboard.hidden = false; $("#coachPlans").hidden = false; if (!document.querySelector(".demo-banner")) dashboard.insertAdjacentHTML("beforebegin", '<div class="demo-banner">معاينة واجهة الكابتن — البيانات المعروضة تجريبية ولا تكشف أي محادثات حقيقية.</div>'); updateSummary(); renderPlans(); renderTrainees(); await openConversation("demo-1"); return; }
     const { data: { session } } = await client.auth.getSession(); state.user = session?.user || null;
     if (!state.user) { gate.innerHTML = '<div><span>🔐</span><b>سجّل الدخول بحساب الكابتن</b><p>تظهر البيانات الحقيقية فقط للكابتن المرتبط رسمياً بالبرنامج.</p><a href="index.html#top">تسجيل الدخول</a><a class="demo-link" href="coach.html?demo=1">عرض الواجهة التجريبية</a></div>'; return; }
-    const { data: coach } = await client.from("training_coaches").select("display_name,is_active").eq("user_id", state.user.id).maybeSingle();
+    const { data: coach } = await client.from("training_coaches").select("display_name,is_active").eq("user_id", state.user.id).maybeSingle(); state.coach = coach;
     if (!coach?.is_active) { gate.innerHTML = '<div><span>🪪</span><b>الحساب غير مرتبط بكابتن</b><p>يجب اعتماد الحساب وربطه ببرنامج تدريب من الإدارة قبل عرض المشتركين.</p><a class="demo-link" href="coach.html?demo=1">عرض الواجهة التجريبية</a></div>'; return; }
-    const { data, error } = await client.from("training_subscriptions").select("id,status,starts_at,ends_at,trainee_id,trainee_name,coach_id,program_id,training_programs(title)").eq("coach_id", state.user.id).order("created_at", { ascending: false });
+    const [{ data, error }, { data: plans, error: plansError }] = await Promise.all([
+      client.from("training_subscriptions").select("id,status,starts_at,ends_at,trainee_id,trainee_name,coach_id,program_id,training_programs(title)").eq("coach_id", state.user.id).order("created_at", { ascending: false }),
+      client.from("training_programs").select("id,slug,title,description,price_iqd,billing_period,sessions_count,max_trainees,is_active").eq("coach_id", state.user.id).order("created_at", { ascending: false })
+    ]);
     if (error) { gate.textContent = "تعذر تحميل بيانات المتدربين حالياً."; return; }
-    state.subscriptions = data || []; gate.hidden = true; dashboard.hidden = false; updateSummary(); renderTrainees(); if (state.subscriptions.length) await openConversation((state.subscriptions.find(isActive) || state.subscriptions[0]).id);
+    state.subscriptions = data || []; state.plans = plansError ? [] : (plans || []); gate.hidden = true; dashboard.hidden = false; $("#coachPlans").hidden = false; updateSummary(); renderPlans(); renderTrainees(); if (state.subscriptions.length) await openConversation((state.subscriptions.find(isActive) || state.subscriptions[0]).id);
   }
+  const periodLabel = period => ({ week: "أسبوع", month: "شهر", session: "حصة" }[period] || period);
+  function renderPlans() {
+    const grid = $("#plansGrid"); grid.replaceChildren();
+    if (!state.plans.length) { const note = document.createElement("div"); note.className = "empty-plans"; note.textContent = "لم تُنشئ اشتراكاً بعد. اضغط إضافة اشتراك للبدء."; grid.append(note); return; }
+    state.plans.forEach(plan => { const card = document.createElement("article"); card.className = `plan-card${plan.is_active ? "" : " off"}`; card.innerHTML = `<div class="plan-card-head"><h3></h3><span class="plan-badge">${plan.is_active ? "متاح" : "متوقف"}</span></div><p></p><div class="plan-price">${Number(plan.price_iqd).toLocaleString("ar-IQ")} د.ع <small>/ ${periodLabel(plan.billing_period)}</small></div><div class="plan-details"><span>${plan.sessions_count} حصص</span><span>حتى ${plan.max_trainees} مشتركاً</span></div><div class="plan-controls"><button type="button" class="edit-plan">تعديل</button><button type="button" class="toggle-plan">${plan.is_active ? "إيقاف" : "تفعيل"}</button></div>`; card.querySelector("h3").textContent = plan.title; card.querySelector("p").textContent = plan.description || "برنامج تدريب أونلاين ومتابعة خاصة."; card.querySelector(".edit-plan").addEventListener("click", () => openPlanForm(plan)); card.querySelector(".toggle-plan").addEventListener("click", () => togglePlan(plan)); grid.append(card); });
+  }
+  function openPlanForm(plan = null) { const form = $("#planForm"); form.reset(); $("#planId").value = plan?.id || ""; $("#planTitle").value = plan?.title || ""; $("#planDescription").value = plan?.description || ""; $("#planPrice").value = plan?.price_iqd || 60000; $("#planPeriod").value = plan?.billing_period || "month"; $("#planSessions").value = plan?.sessions_count || 4; $("#planCapacity").value = plan?.max_trainees || 30; $("#planActive").checked = plan?.is_active ?? true; $("#planFormTitle").textContent = plan ? "تعديل الاشتراك" : "إضافة اشتراك جديد"; $("#planModal").hidden = false; }
+  function closePlanForm() { $("#planModal").hidden = true; }
+  async function togglePlan(plan) { if (state.demo) { plan.is_active = !plan.is_active; renderPlans(); toast("تم تحديث حالة الاشتراك في المعاينة"); return; } const { error } = await client.from("training_programs").update({ is_active: !plan.is_active }).eq("id", plan.id).eq("coach_id", state.user.id); if (error) return toast("تعذر تحديث الاشتراك"); plan.is_active = !plan.is_active; renderPlans(); toast("تم تحديث حالة الاشتراك"); }
   function renderTrainees(query = "") {
     list.replaceChildren(); const filtered = state.subscriptions.filter(s => `${traineeName(s)} ${s.training_programs?.title || ""}`.includes(query.trim()));
     if (!filtered.length) { const note = document.createElement("p"); note.className = "coach-system"; note.textContent = state.subscriptions.length ? "لا توجد نتيجة" : "لا يوجد مشتركون بعد"; list.append(note); return; }
@@ -49,6 +65,19 @@
   function resetImage() { state.file = null; imageInput.value = ""; preview.hidden = true; preview.querySelector("span").textContent = ""; }
   imageInput.addEventListener("change", () => { const file = imageInput.files?.[0]; if (!file) return resetImage(); if (!["image/jpeg","image/png","image/webp"].includes(file.type) || file.size > 5*1024*1024) { resetImage(); toast("اختر صورة JPG أو PNG أو WebP لا تتجاوز 5 ميغابايت"); return; } state.file = file; preview.hidden = false; preview.querySelector("span").textContent = `📷 ${file.name}`; });
   preview.querySelector("button").addEventListener("click", resetImage); $("#traineeSearch").addEventListener("input", e => renderTrainees(e.target.value)); document.querySelectorAll("[data-reply]").forEach(button => button.addEventListener("click", () => { text.value = button.dataset.reply; text.focus(); }));
+  $("#newPlanButton").addEventListener("click", () => openPlanForm()); $("#closePlan").addEventListener("click", closePlanForm); $("#planModal").addEventListener("click", event => { if (event.target.id === "planModal") closePlanForm(); });
+  $("#planForm").addEventListener("submit", async event => {
+    event.preventDefault(); const submit = event.currentTarget.querySelector(".save-plan"); const id = $("#planId").value; const payload = { title: $("#planTitle").value.trim(), description: $("#planDescription").value.trim(), price_iqd: Number($("#planPrice").value), billing_period: $("#planPeriod").value, sessions_count: Number($("#planSessions").value), max_trainees: Number($("#planCapacity").value), is_active: $("#planActive").checked };
+    if (state.demo) { if (id) Object.assign(state.plans.find(plan => plan.id === id), payload); else state.plans.unshift({ id: `demo-plan-${Date.now()}`, ...payload }); renderPlans(); closePlanForm(); toast("تم حفظ الاشتراك في المعاينة"); return; }
+    submit.disabled = true; submit.textContent = "جارٍ الحفظ…";
+    try {
+      let result;
+      if (id) result = await client.from("training_programs").update(payload).eq("id", id).eq("coach_id", state.user.id).select("id,slug,title,description,price_iqd,billing_period,sessions_count,max_trainees,is_active").single();
+      else result = await client.from("training_programs").insert({ ...payload, slug: `coach-${state.user.id.slice(0,8)}-${Date.now().toString(36)}`, coach_id: state.user.id, coach_name: state.coach.display_name, is_online: true }).select("id,slug,title,description,price_iqd,billing_period,sessions_count,max_trainees,is_active").single();
+      if (result.error) throw result.error; if (id) Object.assign(state.plans.find(plan => String(plan.id) === id), result.data); else state.plans.unshift(result.data); renderPlans(); closePlanForm(); toast("تم حفظ الاشتراك وظهر ضمن برامج التدريب");
+    } catch (_) { toast("تعذر حفظ الاشتراك. تحقق من الحقول وحاول مجدداً"); }
+    finally { submit.disabled = false; submit.textContent = "حفظ الاشتراك"; }
+  });
   $("#coachComposer").addEventListener("submit", async event => { event.preventDefault(); const subscription = state.active, messageBody = text.value.trim(), file = state.file; if (!subscription || !isActive(subscription) || (!messageBody && !file)) return; if (state.demo) { const demoMessage = { id: Date.now(), sender_id: state.user.id, body: messageBody || "تم إرفاق صورة تجريبية", created_at: new Date().toISOString() }; text.value = ""; resetImage(); await appendMessage(demoMessage); toast("رسالة تجريبية — لم تُرسل إلى قاعدة البيانات"); return; } const submit = event.currentTarget.querySelector("button[type=submit]"); submit.disabled = true; submit.textContent = "جارٍ الإرسال…"; let imagePath = null; try { if (file) { const extension = {"image/jpeg":"jpg","image/png":"png","image/webp":"webp"}[file.type]; imagePath = `${subscription.id}/${state.user.id}/${crypto.randomUUID()}.${extension}`; const { error } = await client.storage.from("training-chat").upload(imagePath, file, { contentType: file.type, upsert: false }); if (error) throw error; } const { data, error } = await client.from("training_messages").insert({ subscription_id: subscription.id, sender_id: state.user.id, body: messageBody || null, image_path: imagePath, message_type: messageBody && imagePath ? "mixed" : imagePath ? "image" : "text" }).select("id,subscription_id,sender_id,body,image_path,message_type,created_at").single(); if (error) throw error; text.value = ""; resetImage(); await appendMessage(data); } catch (_) { toast("لم تُرسل الرسالة. تأكد من أن الاشتراك فعال"); } finally { submit.disabled = false; submit.textContent = "إرسال"; } });
   client.auth.onAuthStateChange(() => { if (!state.demo) setTimeout(loadCoach, 0); }); window.addEventListener("beforeunload", stopRealtime); loadCoach();
 })();

@@ -22,6 +22,10 @@
       <div><span class="eyebrow">◆ متابعة التدريب الأونلاين</span><h1>كل متدرب، محادثة خاصة.</h1><p>تابع الاستفسارات والصور وتقدم المشتركين من واجهة واحدة وآمنة.</p></div>
       <div class="coach-summary"><article><b id="traineeCount">0</b><small>متدربون</small></article><article><b id="activeCount">0</b><small>اشتراكات فعالة</small></article><article><b id="pendingCount">0</b><small>بانتظار التفعيل</small></article></div>
     </section>
+    <section class="coach-plans shell" id="coachPlans" hidden>
+      <div class="plans-head"><div><span class="eyebrow">باقاتك التدريبية</span><h2>اشتراكاتي</h2><p>أنشئ أكثر من اشتراك وحدد السعر والمدة وعدد الحصص والطاقة الاستيعابية.</p></div><button type="button" id="newPlanButton">＋ إضافة اشتراك</button></div>
+      <div class="plans-grid" id="plansGrid"></div>
+    </section>
     <section class="coach-shell shell" id="coachApp">
       <div class="coach-gate" id="coachGate">جاري التحقق من حساب الكابتن…</div>
       <div class="coach-dashboard" id="coachDashboard" hidden>
@@ -43,6 +47,19 @@
       </div>
     </section>
   </main>
+  <div class="plan-modal" id="planModal" hidden>
+    <form class="plan-form" id="planForm">
+      <button class="plan-close" type="button" id="closePlan" aria-label="إغلاق">×</button>
+      <div><span class="eyebrow">إدارة الاشتراكات</span><h2 id="planFormTitle">إضافة اشتراك جديد</h2></div>
+      <input id="planId" type="hidden">
+      <label>اسم الاشتراك<input id="planTitle" maxlength="140" required placeholder="مثال: متابعة بناء العضلات"></label>
+      <label>وصف الاشتراك<textarea id="planDescription" maxlength="1000" rows="3" required placeholder="اكتب ما يحصل عليه المشترك وخطة المتابعة"></textarea></label>
+      <div class="plan-fields"><label>السعر بالدينار العراقي<input id="planPrice" type="number" min="1000" max="10000000" step="1000" required></label><label>نوع الاشتراك<select id="planPeriod" required><option value="week">أسبوعي</option><option value="month">شهري</option><option value="session">حصة واحدة</option></select></label></div>
+      <div class="plan-fields"><label>عدد الحصص<input id="planSessions" type="number" min="1" max="60" value="4" required></label><label>أقصى عدد للمشتركين<input id="planCapacity" type="number" min="1" max="1000" value="30" required></label></div>
+      <label class="plan-status"><input id="planActive" type="checkbox" checked> إظهار الاشتراك للمستخدمين وإتاحة طلبه</label>
+      <button class="save-plan" type="submit">حفظ الاشتراك</button>
+    </form>
+  </div>
   <div class="coach-toast" id="coachToast"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="coach.js"></script>

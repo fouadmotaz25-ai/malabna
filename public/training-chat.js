@@ -125,6 +125,21 @@
     finally { submit.disabled = false; submit.textContent = "إرسال"; }
   });
 
+  async function loadPublicOnlinePrograms() {
+    const fallbackImages = programs.online.map(item => item.image);
+    const { data, error } = await client.from("training_programs").select("id,slug,title,description,coach_name,price_iqd,billing_period,sessions_count,max_trainees,training_coaches(display_name)").eq("is_online", true).eq("is_active", true).order("created_at", { ascending: false });
+    if (error || !data?.length) return;
+    programs.online = data.map((item, index) => ({
+      icon: "🏋️", tag: "تدريب · أونلاين", title: item.title,
+      coach: item.training_coaches?.display_name || item.coach_name || "كابتن NextMove", rating: "جديد",
+      place: `${item.sessions_count} حصص · حتى ${item.max_trainees} مشتركاً`,
+      description: item.description || "خطة تدريب أونلاين مع متابعة خاصة عبر الشات والصور.",
+      price: `${Number(item.price_iqd).toLocaleString("ar-IQ")} د.ع / ${{ week: "أسبوع", month: "شهر", session: "حصة" }[item.billing_period] || "اشتراك"}`,
+      image: fallbackImages[index % fallbackImages.length], slug: item.slug
+    }));
+    if (currentMode === "online") renderPrograms();
+  }
+
   renderPrograms = function () {
     const items = programs[currentMode];
     $("#trainingGrid").innerHTML = items.map((program, index) => `<article class="training-card"><div class="training-image"><img src="${program.image}" alt="${program.title}" loading="lazy"><span>${program.icon} ${program.tag}</span></div><div class="training-copy"><div class="coach-line"><small>${program.coach}</small><b>★ ${program.rating}</b></div><h3>${program.title}</h3><p>${program.description}</p><div class="program-meta"><span>⌖ ${program.place}</span><strong>${program.price}</strong></div><button onclick="openBooking(${index})">${currentMode === "online" ? "اشترك وابدأ المتابعة" : "احجز مع المدرب"}</button>${currentMode === "online" ? '<small class="chat-included">✓ يشمل الشات والصور بعد التفعيل</small>' : ""}</div></article>`).join("");
@@ -150,5 +165,5 @@
 
   client.auth.onAuthStateChange(() => setTimeout(loadTrainingAccess, 0));
   window.addEventListener("beforeunload", stopRealtime);
-  renderPrograms(); loadTrainingAccess();
+  renderPrograms(); loadPublicOnlinePrograms(); loadTrainingAccess();
 })();
