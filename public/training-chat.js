@@ -148,8 +148,25 @@
   submitBooking = async function (event) {
     event.preventDefault(); const mode = $("#selectedMode").value;
     if (mode !== "online") {
-      const booking = { program: $("#selectedProgram").value, mode, name: $("#traineeName").value, phone: $("#traineePhone").value, date: $("#trainingDate").value, time: $("#trainingTime").value, notes: $("#trainingNotes").value, created_at: new Date().toISOString() };
-      const saved = JSON.parse(localStorage.getItem("nextmove-training-bookings") || "[]"); saved.push(booking); localStorage.setItem("nextmove-training-bookings", JSON.stringify(saved)); closeBooking(); event.target.reset(); toast("تم تسجيل طلب التدريب، سنتواصل معك لتأكيد المدرب والموعد"); return;
+      const { data: { session } } = await client.auth.getSession();
+      if (!session?.user) { toast("سجّل الدخول أولاً لإرسال طلب الحجز رسميًا"); setTimeout(() => { location.href = "index.html#top"; }, 1400); return; }
+      const submit = event.submitter || event.currentTarget.querySelector("button:not(.close)"); submit.disabled = true; submit.textContent = "جارٍ تسجيل الحجز…";
+      try {
+        const phone = $("#traineePhone").value.trim().replace(/[\s()-]/g, "");
+        const { error } = await client.from("training_booking_requests").insert({
+          trainee_id: session.user.id,
+          program_title: $("#selectedProgram").value,
+          trainee_name: $("#traineeName").value.trim(),
+          trainee_phone: phone,
+          training_date: $("#trainingDate").value,
+          training_time: $("#trainingTime").value,
+          notes: $("#trainingNotes").value.trim(),
+        });
+        if (error) throw error;
+        closeBooking(); event.target.reset(); toast("تم تسجيل طلب التدريب رسميًا وربطه بحسابك");
+      } catch (_) { toast("تعذر تسجيل الحجز. تحقق من البيانات وحاول مرة أخرى"); }
+      finally { submit.disabled = false; submit.textContent = "إرسال طلب التدريب"; }
+      return;
     }
     const { data: { session } } = await client.auth.getSession();
     if (!session?.user) { toast("سجّل الدخول أولاً لإرسال طلب الاشتراك وفتح الشات"); setTimeout(() => { location.href = "index.html#top"; }, 1400); return; }

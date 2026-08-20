@@ -31,9 +31,9 @@
 
     <section class="shell plans four-plans" id="plans">
       <article class="plan" data-reveal><span class="plan-badge">مرن وسريع</span><h2>وجبة منفردة</h2><p>اختر أي وجبة منشورة من المطاعم دون اشتراك.</p><div class="price">حسب المطعم <small>د.ع / وجبة</small></div><ul><li>المكونات والسعر واضحان</li><li>معرفة وقت التجهيز</li><li>إشعار المطعم فورًا</li></ul><a class="plan-link" href="#restaurantMeals">اختر وجبتك</a></article>
-      <article class="plan" data-reveal><span class="plan-badge">أسبوع كامل</span><h2>اشتراك أسبوعي</h2><p>ست وجبات متوازنة تصل حسب جدولك.</p><div class="price">54,000 <small>د.ع / أسبوع</small></div><ul><li>6 وجبات متنوعة</li><li>اختيار هدفك الغذائي</li><li>تحديد أيام التوصيل</li></ul><button onclick="openPlanOrder('اشتراك أسبوعي — 6 وجبات')">اشترك أسبوعيًا</button></article>
-      <article class="plan" data-reveal><span class="plan-badge">شهري مرن</span><h2>30 وجبة</h2><p>وجبة يومية كاملة لمدة شهر حسب جدولك.</p><div class="price">240,000 <small>د.ع / شهر</small></div><ul><li>30 وجبة متنوعة</li><li>8,000 د.ع للوجبة</li><li>اختيار أيام وأوقات التوصيل</li></ul><button onclick="openPlanOrder('اشتراك شهري — 30 وجبة')">اختر باقة 30 وجبة</button></article>
-      <article class="plan featured" data-reveal><span class="plan-badge">أفضل توفير</span><h2>60 وجبة</h2><p>وجبتان يوميًا لمدة شهر للالتزام الكامل.</p><div class="price">450,000 <small>د.ع / شهر</small></div><ul><li>60 وجبة متنوعة</li><li>7,500 د.ع للوجبة</li><li>توفير 30,000 د.ع</li></ul><button onclick="openPlanOrder('اشتراك شهري — 60 وجبة')">اختر باقة 60 وجبة</button></article>
+      <article class="plan" data-reveal><span class="plan-badge">أسبوع كامل</span><h2>اشتراك أسبوعي</h2><p>ست وجبات متوازنة تصل حسب جدولك.</p><div class="price">54,000 <small>د.ع / أسبوع</small></div><ul><li>6 وجبات متنوعة</li><li>اختيار هدفك الغذائي</li><li>تحديد أيام التوصيل</li></ul><button onclick="openPlanOrder('weekly_6','اشتراك أسبوعي — 6 وجبات')">اشترك أسبوعيًا</button></article>
+      <article class="plan" data-reveal><span class="plan-badge">شهري مرن</span><h2>30 وجبة</h2><p>وجبة يومية كاملة لمدة شهر حسب جدولك.</p><div class="price">240,000 <small>د.ع / شهر</small></div><ul><li>30 وجبة متنوعة</li><li>8,000 د.ع للوجبة</li><li>اختيار أيام وأوقات التوصيل</li></ul><button onclick="openPlanOrder('monthly_30','اشتراك شهري — 30 وجبة')">اختر باقة 30 وجبة</button></article>
+      <article class="plan featured" data-reveal><span class="plan-badge">أفضل توفير</span><h2>60 وجبة</h2><p>وجبتان يوميًا لمدة شهر للالتزام الكامل.</p><div class="price">450,000 <small>د.ع / شهر</small></div><ul><li>60 وجبة متنوعة</li><li>7,500 د.ع للوجبة</li><li>توفير 30,000 د.ع</li></ul><button onclick="openPlanOrder('monthly_60','اشتراك شهري — 60 وجبة')">اختر باقة 60 وجبة</button></article>
     </section>
 
     <section class="content shell meals" id="restaurantMeals">
@@ -57,6 +57,7 @@
       <h2 id="orderTitle">اختر طلبك</h2>
       <p id="orderHint">اترك بياناتك وجدولك المفضل لتأكيد الطلب.</p>
       <input id="selectedPlan" type="hidden">
+      <input id="selectedPlanName" type="hidden">
       <input id="selectedMealId" type="hidden">
       <label id="mealQuantityLabel" hidden>الكمية<input id="mealQuantity" type="number" min="1" max="20" value="1"></label>
       <div id="planCustomerFields">
@@ -112,11 +113,12 @@
       document.querySelector('#orderBox').style.display='grid';
     }
 
-    function openPlanOrder(plan){
+    function openPlanOrder(planCode,planName){
       document.querySelector('#selectedMealId').value='';
-      document.querySelector('#selectedPlan').value=plan;
-      document.querySelector('#orderTitle').textContent=plan;
-      document.querySelector('#orderHint').textContent='اترك بياناتك وجدولك المفضل لتأكيد الاشتراك.';
+      document.querySelector('#selectedPlan').value=planCode;
+      document.querySelector('#selectedPlanName').value=planName;
+      document.querySelector('#orderTitle').textContent=planName;
+      document.querySelector('#orderHint').textContent='سجّل الدخول ثم اترك بياناتك وجدولك المفضل لإرسال الاشتراك رسميًا.';
       document.querySelector('#mealQuantityLabel').hidden=true;
       document.querySelector('#planCustomerFields').hidden=false;
       document.querySelector('#submitOrderButton').textContent='إرسال طلب الاشتراك';
@@ -140,12 +142,15 @@
         closeOrder();toast('تم إرسال طلب الوجبة وإشعار المطعم فورًا');await loadMeals();return;
       }
 
-      const name=document.querySelector('#customerName').value.trim(),phone=document.querySelector('#customerPhone').value.trim();
+      const {data:{session}}=await client.auth.getSession();
+      if(!session?.user){toast('سجّل الدخول أولًا لإرسال طلب الاشتراك رسميًا');setTimeout(()=>location.href='index.html#top',1700);return}
+      const name=document.querySelector('#customerName').value.trim(),phone=document.querySelector('#customerPhone').value.trim().replace(/[\s()-]/g,'');
       if(name.length<2||phone.length<8){toast('أدخل الاسم ورقم الهاتف بشكل صحيح');return}
-      const order={plan:document.querySelector('#selectedPlan').value,name,phone,goal:document.querySelector('#nutritionGoal').value,time:document.querySelector('#deliveryTime').value,created_at:new Date().toISOString()};
-      const orders=JSON.parse(localStorage.getItem('nextmove-nutrition-orders')||'[]');
-      orders.push(order);localStorage.setItem('nextmove-nutrition-orders',JSON.stringify(orders));
-      closeOrder();event.target.reset();toast('تم تسجيل طلب الاشتراك، وسنتواصل معك لتأكيد الجدول والدفع');
+      button.disabled=true;button.textContent='جارٍ إرسال الاشتراك...';
+      const {error}=await client.from('nutrition_plan_orders').insert({customer_id:session.user.id,plan_code:document.querySelector('#selectedPlan').value,customer_name:name,customer_phone:phone,nutrition_goal:document.querySelector('#nutritionGoal').value,preferred_delivery_time:document.querySelector('#deliveryTime').value});
+      button.disabled=false;button.textContent='إرسال طلب الاشتراك';
+      if(error){toast('تعذر إرسال الاشتراك. تحقق من البيانات وحاول مرة أخرى');return}
+      closeOrder();event.target.reset();toast('تم تسجيل الاشتراك رسميًا وربطه بحسابك');
     }
 
     function toast(message){const box=document.querySelector('#toast');box.textContent=message;box.style.display='block';setTimeout(()=>box.style.display='none',4500)}
