@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08101d">
+  <meta name="description" content="انضمام الكباتن المعتمدين إلى NextMove بكود تفعيل أحادي الاستخدام.">
+  <title>انضم ككابتن | NextMove</title>
+  <link rel="icon" href="nextmove-logo.png">
+  <link rel="stylesheet" href="portal-pages.css">
+  <link rel="stylesheet" href="coach-join.css">
+</head>
+<body>
+  <header class="topbar"><nav class="nav shell">
+    <button class="back-btn" type="button" aria-label="الرجوع" onclick="history.length>1?history.back():location.href='coach.html'">→ <span>رجوع</span></button>
+    <a class="brand" href="index.html"><img src="nextmove-logo.png" alt=""><span>NEXTMOVE</span></a>
+    <div class="links"><a href="training.html">التدريب</a><a href="coach.html">واجهة الكابتن</a><a class="active" href="coach-join.html">انضم ككابتن</a></div>
+  </nav></header>
+  <main class="join-page">
+    <section class="join-layout shell">
+      <div class="join-copy"><span class="eyebrow">◆ للكباتن المعتمدين</span><h1>فعّل حسابك<br>وابدأ التدريب.</h1><p>استخدم الكود الذي استلمته من إدارة NextMove مرة واحدة لتفعيل واجهة الكابتن وإنشاء اشتراكاتك ومتابعة متدربيك.</p><div class="join-points"><article><b>01</b><span>سجّل الدخول بحسابك الشخصي</span></article><article><b>02</b><span>اكتب اسمك ورقم هاتفك</span></article><article><b>03</b><span>أدخل كود التفعيل لمرة واحدة</span></article></div></div>
+      <div class="join-card">
+        <div class="join-card-head"><span>🪪</span><div><h2>تفعيل حساب الكابتن</h2><p>البيانات محفوظة بصورة آمنة</p></div></div>
+        <div class="join-gate" id="joinGate">جاري التحقق من تسجيل الدخول…</div>
+        <form id="coachJoinForm" hidden>
+          <label>اسم الكابتن الكامل<input id="coachJoinName" type="text" minlength="2" maxlength="80" autocomplete="name" required placeholder="مثال: محمد جاسم"></label>
+          <label>رقم الهاتف العراقي<div class="phone-field"><span>🇮🇶</span><input id="coachJoinPhone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="07XXXXXXXXX"></div></label>
+          <label>كود التفعيل<input id="coachJoinCode" class="activation-code" type="text" maxlength="64" autocomplete="one-time-code" spellcheck="false" required placeholder="NM-COACH-XXXX-XXXX-XXXX"></label>
+          <div class="code-note"><span>🔐</span><p>الكود يُستخدم مرة واحدة فقط، ولا تطلب الإدارة منك إرساله لأي شخص آخر.</p></div>
+          <button id="activateCoachButton" type="submit">تفعيل حساب الكابتن</button>
+        </form>
+        <div class="join-result" id="joinResult" hidden></div>
+      </div>
+    </section>
+  </main>
+  <div class="join-toast" id="joinToast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="coach-join.js"></script>
+</body>
+</html>

@@ -28,7 +28,7 @@
     const { data: { session } } = await client.auth.getSession(); state.user = session?.user || null;
     if (!state.user) { gate.innerHTML = '<div><span>🔐</span><b>سجّل الدخول بحساب الكابتن</b><p>تظهر البيانات الحقيقية فقط للكابتن المرتبط رسمياً بالبرنامج.</p><a href="index.html#top">تسجيل الدخول</a><a class="demo-link" href="coach.html?demo=1">عرض الواجهة التجريبية</a></div>'; return; }
     const { data: coach } = await client.from("training_coaches").select("display_name,is_active").eq("user_id", state.user.id).maybeSingle(); state.coach = coach;
-    if (!coach?.is_active) { gate.innerHTML = '<div><span>🪪</span><b>الحساب غير مرتبط بكابتن</b><p>يجب اعتماد الحساب وربطه ببرنامج تدريب من الإدارة قبل عرض المشتركين.</p><a class="demo-link" href="coach.html?demo=1">عرض الواجهة التجريبية</a></div>'; return; }
+    if (!coach?.is_active) { gate.innerHTML = '<div><span>🪪</span><b>الحساب غير مفعّل ككابتن</b><p>استخدم اسمك ورقم هاتفك وكود التفعيل الذي استلمته من الإدارة.</p><a href="coach-join.html">تفعيل حساب الكابتن</a><a class="demo-link" href="coach.html?demo=1">عرض الواجهة التجريبية</a></div>'; return; }
     const [{ data, error }, { data: plans, error: plansError }] = await Promise.all([
       client.from("training_subscriptions").select("id,status,starts_at,ends_at,trainee_id,trainee_name,coach_id,program_id,training_programs(title)").eq("coach_id", state.user.id).order("created_at", { ascending: false }),
       client.from("training_programs").select("id,slug,title,description,price_iqd,billing_period,sessions_count,max_trainees,is_active").eq("coach_id", state.user.id).order("created_at", { ascending: false })
