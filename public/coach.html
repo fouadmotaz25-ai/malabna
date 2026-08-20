@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08101d">
+  <meta name="description" content="لوحة كابتن NextMove لإدارة متدربي التدريب الأونلاين والمحادثات الخاصة.">
+  <title>واجهة الكابتن | NextMove</title>
+  <link rel="icon" href="nextmove-logo.png">
+  <link rel="stylesheet" href="portal-pages.css">
+  <link rel="stylesheet" href="coach.css">
+</head>
+<body>
+  <header class="topbar"><nav class="nav shell">
+    <button class="back-btn" type="button" aria-label="الرجوع" onclick="history.length>1?history.back():location.href='training.html'">→ <span>رجوع</span></button>
+    <a class="brand" href="index.html"><img src="nextmove-logo.png" alt=""><span>NEXTMOVE</span></a>
+    <div class="links"><a href="training.html">التدريب</a><a class="active" href="coach.html">واجهة الكابتن</a><a href="index.html#profile">الحساب</a></div>
+    <span class="coach-role">لوحة الكابتن</span>
+  </nav></header>
+  <main class="coach-page">
+    <section class="coach-intro shell">
+      <div><span class="eyebrow">◆ متابعة التدريب الأونلاين</span><h1>كل متدرب، محادثة خاصة.</h1><p>تابع الاستفسارات والصور وتقدم المشتركين من واجهة واحدة وآمنة.</p></div>
+      <div class="coach-summary"><article><b id="traineeCount">0</b><small>متدربون</small></article><article><b id="activeCount">0</b><small>اشتراكات فعالة</small></article><article><b id="pendingCount">0</b><small>بانتظار التفعيل</small></article></div>
+    </section>
+    <section class="coach-shell shell" id="coachApp">
+      <div class="coach-gate" id="coachGate">جاري التحقق من حساب الكابتن…</div>
+      <div class="coach-dashboard" id="coachDashboard" hidden>
+        <aside class="trainee-sidebar">
+          <div class="sidebar-head"><div><small>المشتركون</small><h2>متدربوك</h2></div><label class="coach-search">⌕<input id="traineeSearch" type="search" placeholder="ابحث عن متدرب" aria-label="البحث عن متدرب"></label></div>
+          <div class="trainee-list" id="traineeList"></div>
+        </aside>
+        <section class="coach-conversation">
+          <header class="conversation-head"><div class="trainee-avatar" id="traineeAvatar">NM</div><div><h2 id="conversationName">اختر متدرباً</h2><p id="conversationMeta">ستظهر محادثته الخاصة هنا</p></div><span class="subscription-state" id="subscriptionState" hidden>فعال</span></header>
+          <div class="conversation-empty" id="conversationEmpty"><span>💬</span><h3>اختر متدرباً لبدء المتابعة</h3><p>كل محادثة منفصلة ولا يستطيع أي مشترك رؤية محادثات الآخرين.</p></div>
+          <div class="conversation-body" id="conversationBody" hidden>
+            <div class="coach-actions"><button type="button" data-reply="أرسل لي صورة واضحة لوضعية التمرين حتى أراجع الأداء.">طلب صورة الأداء</button><button type="button" data-reply="ممتاز، استمر على الخطة الحالية وسأراجع تقدمك نهاية الأسبوع.">تأكيد الخطة</button><button type="button" data-reply="خفف الوزن وأوقف التمرين إذا استمر الألم، وأخبرني بمكان الألم بالتحديد.">تنبيه السلامة</button></div>
+            <div class="coach-messages" id="coachMessages" aria-live="polite"></div>
+            <div class="coach-image-preview" id="coachImagePreview" hidden><span></span><button type="button" aria-label="إلغاء الصورة">×</button></div>
+            <form class="coach-composer" id="coachComposer"><label for="coachImage" title="إرسال صورة">📎<input id="coachImage" type="file" accept="image/jpeg,image/png,image/webp" hidden></label><textarea id="coachText" maxlength="2000" rows="1" placeholder="اكتب ردك للمتدرب…" aria-label="نص الرسالة"></textarea><button type="submit">إرسال</button></form>
+            <small class="privacy-note">🔒 الرسائل والصور خاصة بالكابتن وهذا المتدرب فقط.</small>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <div class="coach-toast" id="coachToast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="coach.js"></script>
+</body>
+</html>

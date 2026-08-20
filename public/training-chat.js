@@ -10,7 +10,7 @@
 
   document.querySelector(".how-training").insertAdjacentHTML("beforebegin", `
     <section class="coach-chat-section" id="onlineCoaching"><div class="shell">
-      <div class="section-head coach-chat-head"><div><span class="eyebrow">متابعة خاصة وآمنة</span><h2>شات الكابتن والمتدرب</h2><p>بعد تفعيل اشتراكك يمكنك إرسال الاستفسارات والصور ومتابعة خطتك مباشرة مع الكابتن.</p></div><span class="secure-chat-badge">🔒 للمشتركين فقط</span></div>
+      <div class="section-head coach-chat-head"><div><span class="eyebrow">متابعة خاصة وآمنة</span><h2>شات الكابتن والمتدرب</h2><p>بعد تفعيل اشتراكك يمكنك إرسال الاستفسارات والصور ومتابعة خطتك مباشرة مع الكابتن.</p></div><div class="chat-head-actions"><a href="coach.html">واجهة الكابتن</a><span class="secure-chat-badge">🔒 للمشتركين فقط</span></div></div>
       <div class="chat-loading" id="chatGate">جاري التحقق من اشتراكك…</div>
       <div class="coach-chat-workspace" id="chatWorkspace" hidden>
         <aside class="chat-subscriptions"><div class="chat-side-title"><b>اشتراكات التدريب</b><small>اختر المحادثة</small></div><div id="subscriptionList"></div></aside>
@@ -49,7 +49,7 @@
       return;
     }
     const userId = state.user.id;
-    const { data, error } = await client.from("training_subscriptions").select("id,status,starts_at,ends_at,trainee_id,coach_id,program_id,training_programs(title,coach_name),training_coaches(display_name,avatar_url)").or(`trainee_id.eq.${userId},coach_id.eq.${userId}`).order("created_at", { ascending: false });
+    const { data, error } = await client.from("training_subscriptions").select("id,status,starts_at,ends_at,trainee_id,trainee_name,coach_id,program_id,training_programs(title,coach_name),training_coaches(display_name,avatar_url)").or(`trainee_id.eq.${userId},coach_id.eq.${userId}`).order("created_at", { ascending: false });
     if (error) { workspace.hidden = true; gate.hidden = false; gate.textContent = "تعذر تحميل اشتراكات التدريب حالياً."; return; }
     state.subscriptions = data || [];
     if (!state.subscriptions.length) {
@@ -141,7 +141,7 @@
     const selected = programs.online.find((item) => item.title === $("#selectedProgram").value), submit = event.submitter || event.currentTarget.querySelector("button:not(.close)"); submit.disabled = true; submit.textContent = "جارٍ إرسال الطلب…";
     try {
       const { data: program, error: programError } = await client.from("training_programs").select("id,coach_id").eq("slug", selected.slug).single(); if (programError) throw programError;
-      const { error } = await client.from("training_subscriptions").insert({ trainee_id: session.user.id, program_id: program.id, coach_id: program.coach_id });
+      const { error } = await client.from("training_subscriptions").insert({ trainee_id: session.user.id, trainee_name: $("#traineeName").value.trim(), program_id: program.id, coach_id: program.coach_id });
       if (error?.code === "23505") { closeBooking(); toast("لديك طلب أو اشتراك قائم بالفعل لهذا البرنامج"); await loadTrainingAccess(); return; }
       if (error) throw error; closeBooking(); event.target.reset(); toast("تم إرسال طلب الاشتراك. سيُفتح شات الكابتن بعد التفعيل"); await loadTrainingAccess(); $("#onlineCoaching").scrollIntoView({ behavior: "smooth" });
     } catch (_) { toast("تعذر إرسال طلب الاشتراك حالياً. حاول مرة أخرى"); }
