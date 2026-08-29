@@ -4,9 +4,9 @@
   "description": "احجز كرة القدم والبادل والنوادي الرياضية وتابع مجتمع الرياضيين.",
   "lang": "ar-IQ",
   "dir": "rtl",
-  "id": "/malabna/",
-  "start_url": "/malabna/?source=pwa",
-  "scope": "/malabna/",
+  "id": "/",
+  "start_url": "/demo.html?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "any",
@@ -14,12 +14,13 @@
   "theme_color": "#0b1220",
   "categories": ["sports", "lifestyle", "shopping"],
   "icons": [
-    {"src": "nextmove-logo.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any maskable"}
+    {"src": "/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
   ],
   "shortcuts": [
-    {"name": "اختر رياضتك", "short_name": "الرياضات", "url": "/malabna/#sports"},
-    {"name": "التدريب الحضوري والأونلاين", "short_name": "التدريب", "url": "/malabna/training.html"},
-    {"name": "المتجر الرياضي", "short_name": "المتجر", "url": "/malabna/#market"},
-    {"name": "مجتمع اللاعبين", "short_name": "المجتمع", "url": "/malabna/#ranking"}
+    {"name": "اختر رياضتك", "short_name": "الرياضات", "url": "/demo.html#sports"},
+    {"name": "التدريب الحضوري والأونلاين", "short_name": "التدريب", "url": "/training.html"},
+    {"name": "المتجر الرياضي", "short_name": "المتجر", "url": "/store.html"},
+    {"name": "مجتمع اللاعبين", "short_name": "المجتمع", "url": "/demo.html#ranking"}
   ]
 }

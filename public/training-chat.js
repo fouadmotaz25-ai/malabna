@@ -5,8 +5,13 @@
     "sb_publishable_K_8YUNMGO4UAOUTxBc9z8Q_5mOKLC46",
     { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } },
   );
-  const slugs = ["muscle-strength-online", "fat-loss-online", "mobility-recovery-online"];
-  programs.online.forEach((program, index) => { program.slug = slugs[index]; });
+  const fallbackImages = [
+    "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=900&q=85"
+  ];
+  programs.online = [];
+  programs.inperson = [];
 
   document.querySelector(".how-training").insertAdjacentHTML("beforebegin", `
     <section class="coach-chat-section" id="onlineCoaching"><div class="shell">
@@ -125,24 +130,25 @@
     finally { submit.disabled = false; submit.textContent = "إرسال"; }
   });
 
-  async function loadPublicOnlinePrograms() {
-    const fallbackImages = programs.online.map(item => item.image);
-    const { data, error } = await client.from("training_programs").select("id,slug,title,description,coach_name,price_iqd,billing_period,sessions_count,max_trainees,training_coaches(display_name)").eq("is_online", true).eq("is_active", true).order("created_at", { ascending: false });
-    if (error || !data?.length) return;
-    programs.online = data.map((item, index) => ({
-      icon: "🏋️", tag: "تدريب · أونلاين", title: item.title,
+  async function loadPublicPrograms() {
+    const { data, error } = await client.from("training_programs").select("id,slug,title,description,coach_name,coach_id,price_iqd,billing_period,sessions_count,max_trainees,is_online,training_coaches(display_name)").eq("is_active", true).not("coach_id", "is", null).order("created_at", { ascending: false });
+    if (error) { programs.online = []; programs.inperson = []; renderPrograms(); return; }
+    const mapProgram = (item, index) => ({
+      icon: item.is_online ? "🏋️" : "⚽", tag: item.is_online ? "تدريب · أونلاين" : "تدريب · حضوري", title: item.title,
       coach: item.training_coaches?.display_name || item.coach_name || "كابتن NextMove", rating: "جديد",
       place: `${item.sessions_count} حصص · حتى ${item.max_trainees} مشتركاً`,
-      description: item.description || "خطة تدريب أونلاين مع متابعة خاصة عبر الشات والصور.",
+      description: item.description || (item.is_online ? "خطة تدريب أونلاين مع متابعة خاصة عبر الشات والصور." : "برنامج تدريب حضوري مع كابتن معتمد."),
       price: `${Number(item.price_iqd).toLocaleString("ar-IQ")} د.ع / ${{ week: "أسبوع", month: "شهر", session: "حصة" }[item.billing_period] || "اشتراك"}`,
       image: fallbackImages[index % fallbackImages.length], slug: item.slug
-    }));
-    if (currentMode === "online") renderPrograms();
+    });
+    programs.online = (data || []).filter(item => item.is_online).map(mapProgram);
+    programs.inperson = (data || []).filter(item => !item.is_online).map(mapProgram);
+    renderPrograms();
   }
 
   renderPrograms = function () {
     const items = programs[currentMode];
-    $("#trainingGrid").innerHTML = items.map((program, index) => `<article class="training-card"><div class="training-image"><img src="${program.image}" alt="${program.title}" loading="lazy"><span>${program.icon} ${program.tag}</span></div><div class="training-copy"><div class="coach-line"><small>${program.coach}</small><b>★ ${program.rating}</b></div><h3>${program.title}</h3><p>${program.description}</p><div class="program-meta"><span>⌖ ${program.place}</span><strong>${program.price}</strong></div><button onclick="openBooking(${index})">${currentMode === "online" ? "اشترك وابدأ المتابعة" : "احجز مع المدرب"}</button>${currentMode === "online" ? '<small class="chat-included">✓ يشمل الشات والصور بعد التفعيل</small>' : ""}</div></article>`).join("");
+    $("#trainingGrid").innerHTML = items.length ? items.map((program, index) => `<article class="training-card"><div class="training-image"><img src="${program.image}" alt="${program.title}" loading="lazy"><span>${program.icon} ${program.tag}</span></div><div class="training-copy"><div class="coach-line"><small>${program.coach}</small><b>★ ${program.rating}</b></div><h3>${program.title}</h3><p>${program.description}</p><div class="program-meta"><span>⌖ ${program.place}</span><strong>${program.price}</strong></div><button onclick="openBooking(${index})">${currentMode === "online" ? "اشترك وابدأ المتابعة" : "احجز مع المدرب"}</button>${currentMode === "online" ? '<small class="chat-included">✓ يشمل الشات والصور بعد التفعيل</small>' : ""}</div></article>`).join("") : '<div class="chat-loading"><span>✓</span><div><b>لا توجد برامج معتمدة في هذا القسم حاليًا</b><p>تظهر البرامج هنا فور نشرها من كابتن مفعّل رسميًا.</p></div></div>';
   };
 
   submitBooking = async function (event) {
@@ -182,5 +188,5 @@
 
   client.auth.onAuthStateChange(() => setTimeout(loadTrainingAccess, 0));
   window.addEventListener("beforeunload", stopRealtime);
-  renderPrograms(); loadPublicOnlinePrograms(); loadTrainingAccess();
+  renderPrograms(); loadPublicPrograms(); loadTrainingAccess();
 })();

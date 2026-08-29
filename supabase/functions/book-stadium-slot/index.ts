@@ -33,6 +33,16 @@ Deno.serve(async (req: Request) => {
     if (!Number.isSafeInteger(slotId) || slotId <= 0) return new Response(JSON.stringify({ error: "INVALID_SLOT" }), { status: 400, headers });
     if (!paymentMethod || (paymentMethod === "split" && (players.length < 2 || players.length > 22))) return new Response(JSON.stringify({ error: "INVALID_PAYMENT_DETAILS" }), { status: 400, headers });
 
+    // Cash bookings are confirmed only by a trusted payment-provider webhook
+    // after the fixed IQD 5,000 deposit has been verified. Until a gateway is
+    // configured, never create or reserve a booking from a browser request.
+    if (paymentMethod === "cash") {
+      return new Response(JSON.stringify({
+        error: "DEPOSIT_GATEWAY_REQUIRED",
+        deposit_iqd: 5000,
+      }), { status: 409, headers });
+    }
+
     const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false, autoRefreshToken: false } });
     const { data, error } = await admin.rpc("book_stadium_slot_internal", { p_user_id: user.id, p_slot_id: slotId, p_payment_method: paymentMethod, p_players: players });
     if (error) {
