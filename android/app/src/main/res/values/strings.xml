@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NextMove</string>
+    <string name="title_activity_main">NextMove</string>
+    <string name="package_name">iq.nextmove.app</string>
+    <string name="custom_url_scheme">iq.nextmove.app</string>
+</resources>

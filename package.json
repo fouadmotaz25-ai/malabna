@@ -11,14 +11,24 @@
     "start": "vinext start",
     "test": "pnpm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint app next.config.ts vite.config.ts",
+    "mobile:build": "node scripts/build-mobile.mjs",
+    "mobile:sync": "pnpm run mobile:build && cap sync",
+    "mobile:test": "pnpm run mobile:build && node --test tests/mobile-app.test.mjs",
+    "mobile:android": "pnpm run mobile:sync && cap open android",
+    "mobile:ios": "pnpm run mobile:sync && cap open ios",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0",
     "drizzle-orm": "0.45.2",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.5.0",
     "@cloudflare/vite-plugin": "1.37.1",
     "@eslint/js": "9.39.4",
     "@next/eslint-plugin-next": "16.2.6",
