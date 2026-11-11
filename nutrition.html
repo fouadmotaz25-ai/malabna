@@ -1,3 +1,4 @@
+Warning: p was declared with const; use let for reassignable variables.
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -134,10 +135,14 @@
         if(!session){toast('سجّل الدخول أولًا لإرسال طلب الوجبة رسميًا');setTimeout(()=>location.href='index.html#top',1700);return}
         button.disabled=true;button.textContent='جارٍ إرسال الطلب...';
         const quantity=Number(document.querySelector('#mealQuantity').value);
-        const {error}=await client.from('meal_orders').insert({meal_id:mealId,quantity});
+        const {data:order,error}=await client.from('meal_orders').insert({meal_id:mealId,quantity}).select('id').single();
         button.disabled=false;button.textContent='تأكيد طلب الوجبة';
-        if(error){toast('تعذر إرسال الطلب أو أن الكمية لم تعد متوفرة');await loadMeals();return}
-        closeOrder();toast('تم إرسال طلب الوجبة وإشعار المطعم فورًا');await loadMeals();return;
+        if(error||!order){toast('تعذر إرسال الطلب أو أن الكمية لم تعد متوفرة');await loadMeals();return}
+        button.disabled=true;button.textContent='جارٍ تجهيز رابط الدفع...';
+        const {data:payment,error:paymentError}=await client.functions.invoke('create-partner-payment',{body:{orderType:'meal',orderId:order.id}});
+        button.disabled=false;button.textContent='تأكيد طلب الوجبة';
+        if(paymentError||!payment?.paymentUrl){closeOrder();toast(payment?.error==='partner_has_not_connected_swiftpay'?'المطعم لم يربط SwiftPayIQ بعد؛ طلبك غير مدفوع':'الطلب محفوظ وغير مدفوع؛ تعذر تجهيز رابط الدفع');await loadMeals();return}
+        closeOrder();location.assign(payment.paymentUrl);return;
       }
 
       const name=document.querySelector('#customerName').value.trim(),phone=document.querySelector('#customerPhone').value.trim();
