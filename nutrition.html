@@ -74,7 +74,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
   <script>
-    const client=window.supabase.createClient('https://onyideifalwoyxbvwhwl.supabase.co','sb_publishable_K_8YUNMGO4UAOUTxBc9z8Q_5mOKLC46');
+    const client=window.supabase.createClient('https://uybaviwaegpxwrcaxtjw.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5YmF2aXdhZWdweHdyY2F4dGp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNDQ0MzgsImV4cCI6MjExMDkyMDQzOH0.aaYggalfciaS0I9AlMERTVJamlA7NGN_7foN8MLU-I8');
     const labels={protein:'وجبات بروتين',diet:'دايت وخسارة وزن',energy:'طاقة وأداء',regular:'وجبات عادية',drinks:'مشروبات'};
     let meals=[];
     const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -134,10 +134,14 @@
         if(!session){toast('سجّل الدخول أولًا لإرسال طلب الوجبة رسميًا');setTimeout(()=>location.href='index.html#top',1700);return}
         button.disabled=true;button.textContent='جارٍ إرسال الطلب...';
         const quantity=Number(document.querySelector('#mealQuantity').value);
-        const {error}=await client.from('meal_orders').insert({meal_id:mealId,quantity});
+        const {data:order,error}=await client.from('meal_orders').insert({meal_id:mealId,quantity}).select('id').single();
         button.disabled=false;button.textContent='تأكيد طلب الوجبة';
-        if(error){toast('تعذر إرسال الطلب أو أن الكمية لم تعد متوفرة');await loadMeals();return}
-        closeOrder();toast('تم إرسال طلب الوجبة وإشعار المطعم فورًا');await loadMeals();return;
+        if(error||!order){toast('تعذر إرسال الطلب أو أن الكمية لم تعد متوفرة');await loadMeals();return}
+        button.disabled=true;button.textContent='جارٍ تجهيز رابط الدفع...';
+        const {data:payment,error:paymentError}=await client.functions.invoke('create-partner-payment',{body:{orderType:'meal',orderId:order.id}});
+        button.disabled=false;button.textContent='تأكيد طلب الوجبة';
+        if(paymentError||!payment?.paymentUrl){closeOrder();toast(payment?.error==='partner_has_not_connected_swiftpay'?'المطعم لم يربط SwiftPayIQ بعد؛ طلبك غير مدفوع':'الطلب محفوظ وغير مدفوع؛ تعذر تجهيز رابط الدفع');await loadMeals();return}
+        closeOrder();location.assign(payment.paymentUrl);return;
       }
 
       const name=document.querySelector('#customerName').value.trim(),phone=document.querySelector('#customerPhone').value.trim();

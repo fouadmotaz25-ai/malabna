@@ -1,0 +1,2 @@
+[functions.swiftpay-webhook]
+verify_jwt = false

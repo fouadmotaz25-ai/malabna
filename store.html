@@ -35,7 +35,7 @@
   <footer><div class="footer-row shell"><span>© 2026 NextMove</span><span>متجر رياضي عراقي متعدد التجار</span></div></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4"></script>
   <script>
-    const client=window.supabase.createClient('https://onyideifalwoyxbvwhwl.supabase.co','sb_publishable_K_8YUNMGO4UAOUTxBc9z8Q_5mOKLC46');
+    const client=window.supabase.createClient('https://uybaviwaegpxwrcaxtjw.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5YmF2aXdhZWdweHdyY2F4dGp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNDQ0MzgsImV4cCI6MjExMDkyMDQzOH0.aaYggalfciaS0I9AlMERTVJamlA7NGN_7foN8MLU-I8');
     const categoryGroups={clothing:['clothing','kits','shoes'],equipment:['equipment','balls','accessories'],devices:['devices'],supplements:['supplements']};
     let items=[];
     const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -44,7 +44,7 @@
     async function load(){const {data,error}=await client.from('market_products').select('id,title,description,specifications,category,price_iqd,stock,image_url,brand').eq('is_active',true).order('created_at',{ascending:false}).limit(60);items=error?[]:(data||[]);render(items)}
     function filterProducts(category,button){document.querySelectorAll('.filters button').forEach(x=>x.classList.remove('active'));button.classList.add('active');const accepted=categoryGroups[category]||[];render(category==='all'?items:items.filter(x=>accepted.includes(x.category)))}
     function toast(message){const box=document.querySelector('#toast');box.textContent=message;box.style.display='block';setTimeout(()=>box.style.display='none',3500)}
-    async function buy(id){const product=items.find(item=>Number(item.id)===Number(id)),title=product?.title||'المنتج';const {data:{session}}=await client.auth.getSession();if(!session){toast('سجّل الدخول من المنصة الرئيسية أولًا ثم عد إلى المتجر');setTimeout(()=>location.href='index.html#top',1800);return}const {error}=await client.from('product_orders').insert({product_id:id,quantity:1});if(error){toast('تعذر إرسال الطلب أو أن المنتج نفد');return}toast('تم إرسال طلب '+title+' إلى المتجر')}
+    async function buy(id){const product=items.find(item=>Number(item.id)===Number(id)),title=product?.title||'المنتج';const {data:{session}}=await client.auth.getSession();if(!session){toast('سجّل الدخول من المنصة الرئيسية أولًا ثم عد إلى المتجر');setTimeout(()=>location.href='index.html#top',1800);return}const {data:order,error}=await client.from('product_orders').insert({product_id:id,quantity:1}).select('id').single();if(error||!order){toast('تعذر إنشاء الطلب أو أن المنتج نفد');return}toast('جارٍ تجهيز رابط الدفع الآمن...');const {data:payment,error:paymentError}=await client.functions.invoke('create-partner-payment',{body:{orderType:'product',orderId:order.id}});if(paymentError||!payment?.paymentUrl){toast(payment?.error==='partner_has_not_connected_swiftpay'?'المتجر لم يربط SwiftPayIQ بعد؛ طلبك غير مدفوع':'الطلب محفوظ وغير مدفوع؛ تعذر تجهيز رابط الدفع');return}location.assign(payment.paymentUrl)}
     load();
   </script>
 </body>

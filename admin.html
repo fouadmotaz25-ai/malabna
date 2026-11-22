@@ -33,7 +33,7 @@
 <p class="foot">الوصول محمي بتسجيل دخول Supabase وسياسات قاعدة البيانات. حذف الحسابات والبيانات نهائيًا غير متاح من هذه الصفحة.</p><div id="editBackdrop" class="modal-backdrop hidden"><form id="editForm" class="modal"><h2 id="editTitle">تعديل السجل</h2><div id="editFields"></div><div class="modal-actions"><button class="primary" type="submit">حفظ التغييرات</button><button id="cancelEdit" class="subtle" type="button">إلغاء</button></div></form></div>
 </section></main>
 <script>
-const db=window.supabase.createClient('https://onyideifalwoyxbvwhwl.supabase.co','sb_publishable_K_8YUNMGO4UAOUTxBc9z8Q_5mOKLC46',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const db=window.supabase.createClient('https://uybaviwaegpxwrcaxtjw.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5YmF2aXdhZWdweHdyY2F4dGp3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNDQ0MzgsImV4cCI6MjExMDkyMDQzOH0.aaYggalfciaS0I9AlMERTVJamlA7NGN_7foN8MLU-I8',{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const byId=id=>document.getElementById(id), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dbTables={
 players:{table:'player_profiles',label:'ملفات اللاعبين',fields:['display_name','position','area','created_at'],group:'users'},
